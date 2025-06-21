@@ -1,28 +1,25 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from datetime import datetime
 import smtplib
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+
+# Chargement des variables d'environnement
+load_dotenv()
 
 app = Flask(__name__)
 
-# Configuration directe
-app.secret_key = "15Jlt@2001portefolio"  # Clé secrète Flask
+# Configuration sécurisée
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
-
-
-@app.route('/converter')
-def converter():
-    return render_template('converter.html')
-@app.route('/portfolio')
-def portfolio():
-    return render_template('index.html')  # Renvoie le même template que la route /
-# Configuration Gmail
+# Configuration Gmail via variables d'environnement
 EMAIL_CONFIG = {
-    'HOST': 'smtp.gmail.com',
-    'PORT': 587,
-    'USER': 'clovisfinka01@gmail.com',  # Votre email Gmail
-    'PASSWORD': 'qswv fxbz sepn dzve'  # Mot de passe d'application
+    'HOST': os.getenv('SMTP_HOST', 'smtp.gmail.com'),
+    'PORT': int(os.getenv('SMTP_PORT', 587)),
+    'USER': os.getenv('SMTP_USER'),
+    'PASSWORD': os.getenv('SMTP_PASSWORD')
 }
 
 def check_email_config():
@@ -34,6 +31,14 @@ def check_email_config():
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/converter')
+def converter():
+    return render_template('converter.html')
+
+@app.route('/portfolio')
+def portfolio():
     return render_template('index.html')
 
 @app.route('/submit_contact', methods=['POST'])
