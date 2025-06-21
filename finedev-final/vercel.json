@@ -3,7 +3,12 @@
   "builds": [
     {
       "src": "app.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.9",
+        "maxLambdaSize": "15mb",
+        "includeFiles": "templates/**"
+      }
     },
     {
       "src": "public/**",
@@ -15,16 +20,35 @@
       "src": "/images/(.*)",
       "dest": "/public/images/$1",
       "headers": {
-        "Cache-Control": "public, max-age=31536000"
+        "Cache-Control": "public, max-age=31536000, immutable"
       }
     },
     {
       "src": "/cv.pdf",
-      "dest": "/public/cv.pdf"
+      "dest": "/public/cv.pdf",
+      "headers": {
+        "Content-Type": "application/pdf"
+      }
+    },
+    {
+      "src": "/converter",
+      "dest": "app.py",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/submit_contact",
+      "dest": "app.py",
+      "methods": ["POST"]
     },
     {
       "src": "/(.*)",
       "dest": "app.py"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/portfolio",
+      "destination": "/"
     }
   ]
 }
