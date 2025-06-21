@@ -14,6 +14,9 @@ app = Flask(__name__)
 # Configuration sécurisée
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
+@app.route('/public/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('public', filename)
 # Configuration Gmail via variables d'environnement
 EMAIL_CONFIG = {
     'HOST': os.getenv('SMTP_HOST', 'smtp.gmail.com'),
